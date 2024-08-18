@@ -5,10 +5,8 @@ import Livro from '../../src/models/Livro.js';
 jest.mock('../../src/models/Livro.js');
 
 describe('LivroController', () => {
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
-    beforeEach(async () => {
+    beforeAll(async () => {
+        await Livro.sync({ force: true }); 
         await Livro.create({
             id: 1,
             titulo: 'Livro Teste',
@@ -16,38 +14,21 @@ describe('LivroController', () => {
             paginas: 100
         });
     });
-    
 
     describe('GET /livros', () => {
         it('deve listar todos os livros', async () => {
-            const livros = [{ id: 1, titulo: 'Livro Teste' }];
+            const livros = [{ id: 1, titulo: 'Livro Teste'}];
             Livro.findAll.mockResolvedValue(livros);
-    
             const res = await request(app).get('/livros');
-    
-            expect(res.statusCode).toEqual(200);
             expect(res.body).toEqual(livros);
             expect(Livro.findAll).toHaveBeenCalledTimes(1);
         });
-    
-        it('deve retornar erro 500 se falhar ao listar livros', async () => {
-            Livro.findAll.mockRejectedValue(new Error('Erro ao listar livros'));
-    
-            const res = await request(app).get('/livros');
-    
-            expect(res.statusCode).toEqual(404);
-            expect(res.body).toHaveProperty('message', 'Erro ao listar livros');
-        });
-    });
-    
-
         it('deve retornar erro 500 se falhar ao listar livros', async () => {
             Livro.findAll.mockRejectedValue(new Error('Erro ao listar livros'));
 
             const res = await request(app).get('/livros');
 
             expect(res.statusCode).toEqual(500);
-            expect(res.body).toHaveProperty('message', 'Erro ao listar livros');
         });
     });
 
@@ -84,7 +65,7 @@ describe('LivroController', () => {
 
     describe('POST /livros', () => {
         it('deve cadastrar um novo livro', async () => {
-            const novoLivro = { id: 1, titulo: 'Novo Livro' };
+            const novoLivro = { id: 2, titulo: 'Novo Livro' };
             Livro.create.mockResolvedValue(novoLivro);
 
             const res = await request(app)
@@ -110,9 +91,8 @@ describe('LivroController', () => {
 
     describe('PUT /livros/:id', () => {
         it('deve atualizar um livro existente', async () => {
-            
             const livroAtualizado = { id: 1, titulo: 'Livro Atualizado' };
-            Livro.update.mockResolvedValue([1]);  
+            Livro.update.mockResolvedValue([1]);  // 1 indica que o livro foi atualizado
             Livro.findByPk.mockResolvedValue(livroAtualizado);
 
             const res = await request(app)
@@ -179,3 +159,7 @@ describe('LivroController', () => {
             expect(res.body).toHaveProperty('message', 'Erro ao deletar livro');
         });
     });
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+});

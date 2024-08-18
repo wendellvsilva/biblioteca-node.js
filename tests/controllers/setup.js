@@ -1,9 +1,19 @@
-import { sequelize } from '../src/dbconfig/dbConnect.js';
+import { Sequelize } from 'sequelize';
+import 'dotenv/config';
 
-beforeEach(async () => {
-    await sequelize.sync({ force: true }); 
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: ':memory:',
+  logging: false,
 });
 
-afterEach(async () => {
-    await sequelize.drop();
+global.sequelize = sequelize; 
+
+beforeAll(async () => {
+  await sequelize.authenticate();
+  await sequelize.sync({ force: true });
+});
+
+afterAll(async () => {
+  await sequelize.close(); 
 });

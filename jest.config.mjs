@@ -1,6 +1,5 @@
-
+// jest.config.mjs
 export default {
-  transform: {
-    "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
-  },
+  testEnvironment: 'node',
+  setupFilesAfterEnv: ['<rootDir>/tests/controllers/setup.js']
 };

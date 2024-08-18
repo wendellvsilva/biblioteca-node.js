@@ -1,9 +1,11 @@
 // src/dbconfig/dbConnect.js
+import testConfig from '../../tests/controllers/testConfig.js';
 import { Sequelize } from 'sequelize';
-import 'dotenv/config';
-import testConfig from '../../tests/controllers/testConfig';
+import 'dotenv/config'
+
 
 const isTestEnv = process.env.NODE_ENV === 'test';
+
 
 const sequelize = new Sequelize(
     isTestEnv ? testConfig : process.env.DB_NAME,
