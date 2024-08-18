@@ -54,7 +54,7 @@ class LivroController {
                 where: { id: req.params.id }
             });
             if (deleted) {
-                res.status(200).json({ message: "Livro deletado" });
+                res.status(200).json({ message: "Livro deletado com sucesso" });
             } else {
                 res.status(404).json({ message: "Livro não encontrado" });
             }

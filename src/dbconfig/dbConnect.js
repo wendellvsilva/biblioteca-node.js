@@ -1,22 +1,32 @@
-import { Sequelize } from "sequelize";
-import "dotenv/config";
+// src/dbconfig/dbConnect.js
+import { Sequelize } from 'sequelize';
+import 'dotenv/config';
+import testConfig from '../../tests/controllers/testConfig';
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-    host: process.env.DB_HOST,
-    dialect: 'mysql'
-});
+const isTestEnv = process.env.NODE_ENV === 'test';
 
-async function connectDB() {
+const sequelize = new Sequelize(
+    isTestEnv ? testConfig : process.env.DB_NAME,
+    isTestEnv ? undefined : process.env.DB_USER,
+    isTestEnv ? undefined : process.env.DB_PASSWORD,
+    {
+        host: isTestEnv ? undefined : process.env.DB_HOST,
+        dialect: isTestEnv ? 'sqlite' : 'mysql',
+        storage: isTestEnv ? ':memory:' : undefined, // Configura para usar SQLite em memória durante os testes
+        logging: false, // Desativa o log para testes
+    }
+);
+
+const connectDB = async () => {
     try {
         await sequelize.authenticate();
-        console.log("Conexão com o MySQL deu certo!");
+        console.log("Conexão com o banco de dados deu certo!");
 
-    
-        await sequelize.sync(); 
+        await sequelize.sync();
         console.log("Modelos sincronizados com o banco de dados!");
     } catch (error) {
-        console.error("Erro na conexão com o MySQL:", error);
+        console.error("Erro na conexão com o banco de dados:", error);
     }
-}
+};
 
 export { sequelize, connectDB };

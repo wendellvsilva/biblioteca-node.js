@@ -5,10 +5,10 @@ const Livro = sequelize.define("Livro", {
     titulo: { type: DataTypes.STRING, allowNull: false },
     editora: { type: DataTypes.STRING },
     preco: { type: DataTypes.FLOAT },
-    paginas: { type: DataTypes.INTEGER }
+    paginas: { type: DataTypes.INTEGER },
 }, {
     tableName: 'livros',
-    timestamps: false 
+    timestamps: false,
 });
 
 export default Livro;
